@@ -22,6 +22,8 @@ end
 
 group :test do
   gem 'rspec'
+  gem 'cucumber-rails', :require => false
+  gem 'database_cleaner'
 end
 
 gem 'jquery-rails'
@@ -39,4 +41,4 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'debugger'
+gem 'debugger'
