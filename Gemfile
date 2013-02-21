@@ -8,6 +8,7 @@ gem 'rails', '3.2.12'
 gem 'sqlite3'
 gem 'execjs'
 gem 'therubyracer'
+gem "mechanize", '~> 2.5.1'
 
 
 # Gems used only for assets and not required
@@ -24,6 +25,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
+  gem 'factory_girl_rails'
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
 end
