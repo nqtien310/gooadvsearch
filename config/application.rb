@@ -60,7 +60,7 @@ module Gooadvsearch
     config.assets.version = '1.0'
 
     config.generators do |g|
-        g.fixture_replacement :factory_girl, :suffix => 'factory'
+        g.fixture_replacement :factory_girl
     end
   end
 end
