@@ -1,4 +1,5 @@
 class SearchOrder < ActiveRecord::Base
+	has_many :websites, :dependent => :destroy
 	has_many :search_queries, :dependent => :destroy
 	accepts_nested_attributes_for :search_queries
 	attr_accessible :search_type, :status, :total_results

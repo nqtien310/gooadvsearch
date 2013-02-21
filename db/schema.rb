@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130221014625) do
+ActiveRecord::Schema.define(:version => 20130221034856) do
 
   create_table "search_orders", :force => true do |t|
     t.integer  "total_results"
@@ -25,6 +25,13 @@ ActiveRecord::Schema.define(:version => 20130221014625) do
     t.integer  "search_order_id"
     t.string   "content"
     t.string   "status"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "websites", :force => true do |t|
+    t.integer  "search_order_id"
+    t.string   "domain_name"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
