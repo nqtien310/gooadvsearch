@@ -2,7 +2,6 @@
 
 FactoryGirl.define do
   factory :website do
-    search_order 1
-    domain_name "MyString"
+    domain_name "http://www.yahoo.com"
   end
 end
