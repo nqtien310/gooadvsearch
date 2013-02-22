@@ -4,8 +4,10 @@ module Search
 	class Main		
 		attr_accessor :search_string
 
-		def initialize
-			@search_string = 'nqtien310'
+		def initialize(search_order = nil)			
+			if search_order.instance_of? SearchOrder
+				@search_string = Search::SearchString.new(search_order).to_s
+			end
 		end
 
 		def search						
