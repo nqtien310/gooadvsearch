@@ -21,6 +21,10 @@ module Search
 						content.split(' ').collect { |word|	word.gsub(/^-/, '') }.reject{ |word| word.strip.length == 0 }.join(' OR ')						
 					when SearchQuery::STATUSES[:SYNONYM]						
 						content.split(' ').collect { |word|	"~#{word}" }.join(' ')
+					when SearchQuery::STATUSES[:ALLINURL]						
+						"allinurl:#{content}"						
+					when SearchQuery::STATUSES[:ALLINTITLE]						
+						"allintitle:#{content}"
 					when SearchQuery::STATUSES[:AND]
 						content			
 					end

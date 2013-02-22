@@ -1,10 +1,12 @@
 class SearchQuery < ActiveRecord::Base
 	STATUSES = {
-		:EXACT    => 'exact',
-		:EXCLUDED => 'excluded',
-		:AND 		  => 'and',
-		:OR 		  => 'or',
-		:SYNONYM  => 'synonym'
+		:EXACT       => 'exact',
+		:EXCLUDED    => 'excluded',
+		:AND 		     => 'and',
+		:OR 		     => 'or',
+		:SYNONYM     => 'synonym',
+		:ALLINURL    => 'allinurl',
+		:ALLINTITLE  => 'allintitle'
 	}
 
 	belongs_to :search_order

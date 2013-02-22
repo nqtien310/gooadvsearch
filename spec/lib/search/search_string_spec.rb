@@ -68,6 +68,32 @@ describe 'Search::SearchString'	do
 
 			its(:string_from_search_queries) { should == expected_search_string }			
 		end
+
+		context 'allinurl search_queries' do
+			let(:search_order) { FactoryGirl.build(:search_order) }
+			let(:search_content) { 'Should only search this in url' }
+			let(:expected_search_string) { 'allinurl:Should only search this in url' }	
+			let(:search_query) { FactoryGirl.build(:allinurl_search_query , :content => search_content)}
+
+			before(:all) do
+				search_order.search_queries << search_query
+			end
+
+			its(:string_from_search_queries) { should == expected_search_string }			
+		end
+
+		context 'allintitle search_queries' do
+			let(:search_order) { FactoryGirl.build(:search_order) }
+			let(:search_content) { 'Should only search this in url' }
+			let(:expected_search_string) { 'allintitle:Should only search this in url' }	
+			let(:search_query) { FactoryGirl.build(:allintitle_search_query , :content => search_content)}
+
+			before(:all) do
+				search_order.search_queries << search_query
+			end
+
+			its(:string_from_search_queries) { should == expected_search_string }			
+		end
 	end
 
 	describe '#string_from_domain_names' do

@@ -23,5 +23,13 @@ FactoryGirl.define do
 		factory :synonym_search_query do
 			status SearchQuery::STATUSES[:SYNONYM]
 		end
+
+		factory :allinurl_search_query do
+			status SearchQuery::STATUSES[:ALLINURL]
+		end
+
+		factory :allintitle_search_query do
+			status SearchQuery::STATUSES[:ALLINTITLE]
+		end
 	end
 end
