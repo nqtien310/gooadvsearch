@@ -20,7 +20,7 @@ describe SearchOrder do
   		end
 
   		context 'is not empty' do
-  			let(:search_query) { FactoryGirl.build(:search_query) }
+  			let(:search_query) { FactoryGirl.build(:exact_search_query) }
   			before(:all) { subject.search_queries << search_query }
   			its(:save) { should be_true }        
   		end
