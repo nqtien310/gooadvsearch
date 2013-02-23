@@ -35,6 +35,7 @@ describe 'Search::Main' do
 		let(:total_results) { 50 }	
 		let(:search_order) { FactoryGirl.build(:search_order , :total_results => total_results) }
 		let(:search_query) { FactoryGirl.build(:exact_search_query, :content => search_string) }
+		let(:nokogiri_elements) { subject.to_array_of_nokogiri_elements(@search_result_page) }
 
 
 		before(:each) do
@@ -45,8 +46,11 @@ describe 'Search::Main' do
 		context 'with popular search string' do
 			let(:search_string) { 'google' }
 
-			it 'should return an array of nokogiri elements with size equal to total_results' do
-				nokogiri_elements = subject.to_array_of_nokogiri_elements(@search_result_page)
+			it 'should return an array of nokogiri elements' do
+				nokogiri_elements.first.class.should == Nokogiri::XML::Element
+			end
+
+			it 'should return an array with size equal to total_results' do
 				nokogiri_elements.size.should == total_results
 			end
 		end
@@ -55,7 +59,6 @@ describe 'Search::Main' do
 			let(:search_string) { 'should not gooadvsearch exist' }
 
 			it 'should return an empty array' do
-				nokogiri_elements = subject.to_array_of_nokogiri_elements(@search_result_page)
 				nokogiri_elements.size.should == 0
 			end
 		end
@@ -63,9 +66,11 @@ describe 'Search::Main' do
 		context 'with very rare search string' do
 			let(:search_string) { 'nqtien310.wapto.me' }
 
-			it 'should return an array of nokogiri elements with size smaller than total_results' do
-				nokogiri_elements = subject.to_array_of_nokogiri_elements(@search_result_page)
-				p nokogiri_elements.size
+			it 'should return an array of nokogiri elements' do
+				nokogiri_elements.first.class.should == Nokogiri::XML::Element
+			end
+
+			it 'should return an array with size smaller than total_results' do
 				nokogiri_elements.size.should < total_results
 			end
 		end
