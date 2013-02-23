@@ -4,93 +4,66 @@ describe 'Search::SearchString'	do
 	subject { Search::SearchString.new(search_order) }
 	
 	describe '#string_from_search_queries' do		
+		let(:search_order) { 
+			search_order = FactoryGirl.build(:search_order)
+			search_order.save(:validate => false) 
+			search_order
+		}
+
+		before(:each) { FactoryGirl.create(:search_query , :status => status, :content => search_content, :search_order => search_order) }
+
 		context 'and search_queries' do			
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { 'All should be included' }
 			let(:expected_search_string) { 'All should be included' }	
-			let(:search_query) { FactoryGirl.build(:and_search_query , :content => search_content)}
+			let(:status) { SearchQuery::STATUSES[:AND] }
 
-			before(:all) do
-				search_order.search_queries << search_query
-			end
-
-			its(:string_from_search_queries) { should include(expected_search_string) }
+			its(:string_from_search_queries) { should == expected_search_string }
 		end
 	
 		context 'exact search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { '"exact" sear"ch' }
 			let(:expected_search_string) { '"exact search"' }	
-			let(:search_query) { FactoryGirl.build(:exact_search_query , :content => search_content)}
+			let(:status) { SearchQuery::STATUSES[:EXACT] }
 
-			before(:all) do
-				search_order.search_queries << search_query
-			end
-
-			its(:string_from_search_queries) { should include(expected_search_string) }
+			its(:string_from_search_queries) { should == expected_search_string }
 		end
 
 		context 'excluded search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { '5 - 4' }
 			let(:expected_search_string) { '-5 -- -4' }	
-			let(:search_query) { FactoryGirl.build(:excluded_search_query , :content => search_content)}
+			let(:status) { SearchQuery::STATUSES[:EXCLUDED] }
 
-			before(:all) do
-				search_order.search_queries << search_query
-			end
-
-			its(:string_from_search_queries) { should include(expected_search_string) }			
+			its(:string_from_search_queries) { should == expected_search_string }
 		end	
 
 		context 'OR search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { '-word1 word2 -' }
 			let(:expected_search_string) { 'word1 OR word2' }	
-			let(:search_query) { FactoryGirl.build(:or_search_query , :content => search_content)}
-
-			before(:all) do
-				search_order.search_queries << search_query
-			end
+			let(:status) { SearchQuery::STATUSES[:OR] }
 
 			its(:string_from_search_queries) { should == expected_search_string }			
 		end
 
 		context 'synonym search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { '-word1 word2 -' }
 			let(:expected_search_string) { '~-word1 ~word2 ~-' }	
-			let(:search_query) { FactoryGirl.build(:synonym_search_query , :content => search_content)}
-
-			before(:all) do
-				search_order.search_queries << search_query
-			end
+			let(:status) { SearchQuery::STATUSES[:SYNONYM] }
 
 			its(:string_from_search_queries) { should == expected_search_string }			
 		end
 
 		context 'allinurl search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { 'Should only search this in url' }
 			let(:expected_search_string) { 'allinurl:Should only search this in url' }	
-			let(:search_query) { FactoryGirl.build(:allinurl_search_query , :content => search_content)}
-
-			before(:all) do
-				search_order.search_queries << search_query
-			end
+			let(:status) { SearchQuery::STATUSES[:ALLINURL] }
 
 			its(:string_from_search_queries) { should == expected_search_string }			
 		end
 
 		context 'allintitle search_queries' do
-			let(:search_order) { FactoryGirl.build(:search_order) }
 			let(:search_content) { 'Should only search this in url' }
 			let(:expected_search_string) { 'allintitle:Should only search this in url' }	
-			let(:search_query) { FactoryGirl.build(:allintitle_search_query , :content => search_content)}
-
-			before(:all) do
-				search_order.search_queries << search_query
-			end
+			let(:status) { SearchQuery::STATUSES[:ALLINTITLE] }
 
 			its(:string_from_search_queries) { should == expected_search_string }			
 		end
