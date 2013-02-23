@@ -1,11 +1,15 @@
 module Search
 	GOOGLE_URL = 'http://google.com'
 	SEARCH_RESULT_ROW_CSS = 'li.g'
+	PAGINATE_LINK_CSS = 'fl'
+
 	class Main		
 		attr_accessor :search_string
 
 		def initialize(search_order = nil)			
 			if search_order.instance_of? SearchOrder
+				@search_order = search_order
+				@total_results_count = @search_order.total_results
 				@search_string = Search::SearchString.new(search_order).to_s
 			end
 		end
@@ -24,7 +28,7 @@ module Search
 			search_form.submit
 		end
 
-		def to_array_of_hashes(nokogiri_elements)						
+		def to_array_of_hashes(nokogiri_elements)
 			nokogiri_elements ||= []
 			nokogiri_elements.map do |element|
 				a = element.at_css('a')					
@@ -37,7 +41,20 @@ module Search
 		end
 
 		def to_array_of_nokogiri_elements(search_result_page)
-			search_result_page.search(SEARCH_RESULT_ROW_CSS)
+			results = []
+			page = 1
+			while( ( remaining_results_count = @total_results_count - results.size ) > 0) do
+				next_page_index = page - 1
+				results = results + search_result_page.search(SEARCH_RESULT_ROW_CSS)[0...remaining_results_count]
+				next_page_link = search_result_page.links_with(:class => PAGINATE_LINK_CSS)[next_page_index]
+
+				break unless next_page_link.present?
+
+				next_page_link.click
+				page = page + 1
+			end
+			results
+			
 		end
 	end
 end
