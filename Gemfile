@@ -9,6 +9,7 @@ gem 'sqlite3'
 gem 'execjs'
 gem 'therubyracer'
 gem "mechanize", '~> 2.5.1'
+gem "haml-rails"
 
 
 # Gems used only for assets and not required
