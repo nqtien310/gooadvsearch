@@ -13,6 +13,141 @@ describe 'Search::Main' do
 			subject.should_receive(:to_array_of_hashes).with(nokogiri_elements).once			
 			subject.search
 		end
+
+		let(:search_order) do
+				search_order = FactoryGirl.build(:search_order)
+				search_order.save(:validate => false)
+				search_order
+		end
+
+		describe 'simple search_query' do		
+			let(:search_results) do
+				@search_results ||= subject.search
+				@search_results
+			end	
+
+			let(:search_string) { 'google' }
+			before(:all) do
+			 FactoryGirl.create(:and_search_query, :content => search_string, :search_order => search_order)
+			end
+
+			context '#search_results' do
+				it 'should has size equal to search_order\'s total_results' do
+					search_results.size.should == search_order.total_results
+				end
+
+				it 'should contain hash elements' do
+					search_results[0].should be_instance_of(Hash)
+				end
+
+				it 'should contain valid search results' do
+					search_results.select do |r| 
+						( r[:description] + r[:title] ).downcase.include?(search_string)
+					end.size.should == search_order.total_results
+				end
+			end
+		end
+
+		describe 'complex search queries' do
+			context 'with excluded' do
+				before(:each) do
+					FactoryGirl.create(:excluded_search_query, :content => excluded_search_string, :search_order => search_order)
+					FactoryGirl.create(:exact_search_query, :content => exact_search_string, :search_order => search_order)
+				end
+
+				context 'with valid search tokens' do
+					let(:excluded_search_string) { 'google' }
+					let(:exact_search_string) { 'nqtien310' }
+
+					let(:search_results) do
+						@search_results ||= subject.search
+						@search_results
+					end
+
+					it 'should return array with size equal to size of search_order\'s total_results' do
+						search_results.size.should == search_order.total_results
+					end
+
+					it 'should return search results which contain exact_search_string' do
+						search_results.each do |r|
+							a = [ r[:description], r[:title], r[:href] ].join(' ').should be_include(exact_search_string)
+						end
+					end
+
+					it 'should not return search results which contain excluded_search_string' do
+						search_results.each do |r|
+							a = [ r[:description], r[:title], r[:href] ].join(' ').should_not be_include(excluded_search_string)
+						end
+					end
+				end
+
+				context 'without valid search tokens' do
+					let(:excluded_search_string) { 'google' }
+					let(:exact_search_string) { 'nqtien310 should not exist here' }
+
+					it 'should return an empty array' do
+						search_results = subject.search
+						search_results.should be_blank
+					end	
+				end
+			end
+
+			context 'with allinurl' do
+				before(:each) do
+					FactoryGirl.create(:allinurl_search_query, :content => search_string, :search_order => search_order)
+				end
+
+				let(:search_string) { search_tokens.join(' ')}
+
+				context 'with valid search tokens' do
+					let(:search_tokens) { %w(nqtien310 vndv) }
+					
+					it 'should return href contain at least 1 search token' do
+						search_results = subject.search
+						search_results.each do |r|
+							search_tokens.should be_any{ |search_token| r[:href].downcase.include?(search_token) }
+						end
+					end
+				end
+
+				context 'with invalid search tokens' do
+					let(:search_tokens) { %w(nqtien310 vndv this is invalid) }
+
+					it 'should return empty array' do
+						search_results = subject.search
+						search_results.should be_blank
+					end
+				end
+			end	
+
+			context 'with allintitle' do
+				let(:search_string) { search_tokens.join(' ')}
+
+				before(:each) do
+					FactoryGirl.create(:allintitle_search_query, :content => search_string, :search_order => search_order)
+				end
+
+				context 'with valid search tokens' do
+					let(:search_tokens) { %w(google search) }
+				
+					it 'should return href contain at least 1 search token' do
+						search_results = subject.search
+						search_results.each do |r|
+							search_tokens.should be_any{ |search_token| r[:title].downcase.include?(search_token) }
+						end
+					end
+				end
+
+				context 'with invalid search tokens' do
+					let(:search_tokens) { %w(nqtien310 vndv this is invalid) }
+
+					it 'should return empty array' do
+						search_results = subject.search
+						search_results.should be_blank
+					end
+				end
+			end	
+		end	
 	end
 
 	describe '#submit_search_form_with' do
