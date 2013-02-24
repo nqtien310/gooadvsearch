@@ -120,10 +120,10 @@ describe 'Search::Main' do
 
 			it 'should has element with value extracted from nokogiri_elements' do
 				result[0][:href].should == 'http://www.yahoo.com'
-				result[0][:text].should == 'YahooMailWebsite'
+				result[0][:title].should == 'YahooMailWebsite'
 				result[0][:description].should == 'This is yahoo website'
 				result[1][:href].should == 'http://www.google.com'
-				result[1][:text].should == 'google'
+				result[1][:title].should == 'google'
 				result[1][:description].should == 'This is google website'
 			end
 		end

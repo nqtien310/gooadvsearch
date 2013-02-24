@@ -8,6 +8,7 @@ module Search
 
 		def initialize(search_order = nil)			
 			if search_order.instance_of? SearchOrder
+				@page = 1
 				@search_order = search_order
 				@total_results_count = @search_order.total_results
 				@search_string = Search::SearchString.new(search_order).to_s
@@ -30,10 +31,11 @@ module Search
 
 		def to_array_of_hashes(nokogiri_elements)
 			nokogiri_elements ||= []
+
 			nokogiri_elements.map do |element|
 				a = element.at_css('a')					
 				{					
-					:text  			 => a.children.map(&:text).join,
+					:title  			 => a.children.map(&:text).join,
 					:href  			 => a.attributes['href'].value,
 					:description => element.at_css('.s').text,
 				}
@@ -41,20 +43,27 @@ module Search
 		end
 
 		def to_array_of_nokogiri_elements(search_result_page)
-			results = []
-			page = 1
-			while( ( remaining_results_count = @total_results_count - results.size ) > 0) do
-				next_page_index = page - 1
-				results = results + search_result_page.search(SEARCH_RESULT_ROW_CSS)[0...remaining_results_count]
-				next_page_link = search_result_page.links_with(:class => PAGINATE_LINK_CSS)[next_page_index]
-
-				break unless next_page_link.present?
-
-				next_page_link.click
-				page = page + 1
-			end
-			results
+			nokogiri_elements = []
 			
+			while( ( remaining_results_count = @total_results_count - nokogiri_elements.size ) > 0) do
+				nokogiri_elements = nokogiri_elements + search_result_page.search(SEARCH_RESULT_ROW_CSS).select do |element|
+					#this line is to make sure "Image for ... " element is not included
+					element.at_css('.s').present?
+				end[0...remaining_results_count]
+
+				search_result_page = go_to_next_page(search_result_page)
+				break unless search_result_page.present?
+			end
+
+			nokogiri_elements			
 		end
+
+		def go_to_next_page(search_result_page)
+			next_page_index = @page - 1
+			@page = @page + 1
+			next_page_link = search_result_page.links_with(:class => PAGINATE_LINK_CSS)[next_page_index]	
+			next_page_link.click if next_page_link.present?
+		end
+		
 	end
 end
