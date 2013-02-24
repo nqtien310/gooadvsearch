@@ -10,6 +10,7 @@ gem 'execjs'
 gem 'therubyracer'
 gem "mechanize", '~> 2.5.1'
 gem "haml-rails"
+gem "state_machine"
 
 
 # Gems used only for assets and not required
