@@ -18,11 +18,32 @@ class SearchOrder < ActiveRecord::Base
 	}
 
 	MIN_SEARCH_QUERY = 1
+	DEFAULT_TOTAL_RESULTS = 10
+
 	validate  :has_at_least_1_search_query
 	validates :status, :search_type, :presence  => true
 	validates :status, :inclusion => { :in => STATUSES.values }
 	validates :search_type, :inclusion => { :in => SEARCH_TYPES.values }
 	validates :total_results, :numericality => { :greater_than => 0 }
+
+
+	after_initialize do
+		if self.new_record?
+			self.search_type ||= SEARCH_TYPES[:LINK]
+			self.total_results ||= DEFAULT_TOTAL_RESULTS
+		end
+	end
+
+
+	state_machine :status , :initial => STATUSES[:PENDING] do
+		event :finish do
+			transition STATUSES[:PENDING] => STATUSES[:FINISHED] 
+		end
+
+		event :error do
+			transition STATUSES[:PENDING] => STATUSES[:ERROR] 
+		end
+	end
 
 	private
 

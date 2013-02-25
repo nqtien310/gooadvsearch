@@ -11,7 +11,33 @@ describe SearchOrder do
   it { should ensure_inclusion_of(:status).in_array( SearchOrder::STATUSES.values ) }
   it { should validate_numericality_of(:total_results) }
   
-  subject { FactoryGirl.build(:search_order) }
+  subject { SearchOrder.new( :total_results => total_results , :search_type => search_type ) }
+  let(:total_results) { nil }
+  let(:search_type) { nil }
+
+  describe 'init' do
+    context 'attr total_results' do
+      context 'without specifying value' do
+        its(:total_results) { should == SearchOrder::DEFAULT_TOTAL_RESULTS }    
+      end
+
+      context 'with specifying value' do
+        let(:total_results) { 50 }
+        its(:total_results) { should == total_results }    
+      end
+    end
+
+    context 'attr search_type' do
+      context 'without specifying value' do
+        its(:search_type) { should == SearchOrder::SEARCH_TYPES[:LINK] }
+      end
+
+      context 'with specifying value' do
+        let(:search_type) { SearchOrder::SEARCH_TYPES[:IMAGE] }
+        its(:search_type) { should == SearchOrder::SEARCH_TYPES[:IMAGE] }
+      end
+    end
+  end
 
   describe 'save' do
   	describe 'search_queries' do
@@ -23,7 +49,30 @@ describe SearchOrder do
   			let(:search_query) { FactoryGirl.build(:exact_search_query) }
   			before(:all) { subject.search_queries << search_query }
   			its(:save) { should be_true }        
+        its(:status) { should == SearchOrder::STATUSES[:PENDING] }
   		end
   	end
+  end
+
+  describe 'state_machine' do
+    let(:search_query) { FactoryGirl.build(:exact_search_query) }
+    before(:each) { 
+      subject.search_queries << search_query 
+      subject.save
+    }
+
+    context '#finish!' do
+      it 'should mark status as "finished"' do
+        subject.finish!
+        subject.status.should == SearchOrder::STATUSES[:FINISHED]
+      end
+    end
+
+    context '#error!' do
+      it 'should mark status as "error"' do
+        subject.error!
+        subject.status.should == SearchOrder::STATUSES[:ERROR]
+      end
+    end
   end
 end

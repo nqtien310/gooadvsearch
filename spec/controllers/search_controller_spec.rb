@@ -94,6 +94,10 @@ describe SearchController do
 					SearchOrder.count.should == 1
 				end
 
+				it 'should mark search order status as "FINISHED"' do
+					SearchOrder.first.status.should == SearchOrder::STATUSES[:FINISHED]
+				end	
+
 				it 'should create associated search queries' do
 					search_order = SearchOrder.last
 					search_order.search_queries.size.should == 2
