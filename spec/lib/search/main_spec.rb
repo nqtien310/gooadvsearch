@@ -273,4 +273,55 @@ describe 'Search::Main' do
 			end
 		end
 	end
+
+	describe '#go_to_next_page' do
+		let(:search_order) { FactoryGirl.build(:search_order) }
+		let(:link1) { stub('link') }
+		let(:link2) { stub('link') }
+		let(:link3) { stub('link') }
+
+		let(:links) do
+			[link1, link2, link3]
+		end
+
+		let(:search_result_page) { mock('search_result_page') }
+
+		before(:each) do
+			links.each do |link|
+				link.stub(:click)
+			end
+
+			search_result_page.should_receive('links_with').and_return(links)
+		end
+
+		it 'should increase page value' do
+			lambda do
+				subject.go_to_next_page(search_result_page)
+			end.should change(subject, :page).by(1)
+		end
+
+		context 'When next_page_link exists' do
+			it 'should send "#click" message to next_page_link' do
+				link1.should_receive(:click).once
+				subject.go_to_next_page(search_result_page)
+			end
+
+			it 'should not send "#click" messages to other links' do
+				(links - [link1]).each { |link| link.should_not_receive(:click) }
+				subject.go_to_next_page(search_result_page)
+			end
+		end
+
+		context 'When next_page_link doesn\'t exists' do
+			before(:each) do
+				subject.page = links.size + 1
+			end
+
+			it 'should not send "#click" message to links' do
+				links.each { |link| link.should_not_receive(:click) }
+				subject.go_to_next_page(search_result_page)
+			end
+		end
+		
+	end
 end

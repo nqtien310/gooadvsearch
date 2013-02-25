@@ -4,7 +4,7 @@ module Search
 	PAGINATE_LINK_CSS = 'fl'
 
 	class Main		
-		attr_accessor :search_string
+		attr_accessor :search_string, :page
 
 		def initialize(search_order = nil)			
 			if search_order.instance_of? SearchOrder
