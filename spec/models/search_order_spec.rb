@@ -49,7 +49,7 @@ describe SearchOrder do
   			let(:search_query) { FactoryGirl.build(:exact_search_query) }
   			before(:all) { subject.search_queries << search_query }
   			its(:save) { should be_true }        
-        its(:status) { should == SearchOrder::STATUSES[:PENDING] }
+        	its(:status) { should == SearchOrder::STATUSES[:PENDING] }
   		end
   	end
   end
