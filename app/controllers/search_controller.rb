@@ -1,6 +1,7 @@
 class SearchController < ApplicationController
 	def index
 		@search_order = SearchOrder.new
+		@search_order.search_queries.build
 	end
 
 	def create

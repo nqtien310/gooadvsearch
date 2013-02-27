@@ -1,0 +1,22 @@
+%h3 Search form
+= form_for @search_order, :url => search_index_path, :method => :post do |f|
+	= f.label :total_results
+	= f.text_field :total_results
+	%br
+
+	= f.label :search_type
+	= f.select :search_type, options_for_select(SearchOrder::SEARCH_TYPES.values)
+	%br
+
+	.search_query
+		%h5 Search query
+		= f.fields_for :search_queries do | sqf |
+			= sqf.label :content
+			= sqf.text_field :content
+			%br
+
+			= sqf.label :status, 'Search option'
+			= search_query_status_select(sqf)
+			%br
+
+	= f.submit

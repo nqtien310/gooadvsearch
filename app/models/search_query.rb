@@ -9,6 +9,11 @@ class SearchQuery < ActiveRecord::Base
 		:ALLINTITLE  => 'allintitle'
 	}
 
+	MAPPED_STATUSES = [
+		["Exactly", "exact"], ["Excluded", "excluded"], ["And", "and"],
+		 ["Or", "or"], ["Synonym", "synonym"], ["Only search in url", "allinurl"], ["Only search in title", "allintitle"]
+	]
+
 	belongs_to :search_order
 
 	validates :content, :status, :presence => true

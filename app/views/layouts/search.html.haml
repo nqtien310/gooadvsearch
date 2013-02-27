@@ -1,0 +1,10 @@
+!!! 5
+%html
+%head
+	%title Google Advance Search
+	= stylesheet_link_tag 'search', :media => 'all'
+	= javascript_include_tag 'search'
+	= csrf_meta_tags
+
+%body
+	= yield	

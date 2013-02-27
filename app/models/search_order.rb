@@ -9,7 +9,7 @@ class SearchOrder < ActiveRecord::Base
 		:PENDING  => 'pending',
 		:ERROR 		=> 'error',
 		:FINISHED => 'finished'
-	}
+	}	
 
 	SEARCH_TYPES = {
 		:LINK     => 'link',
