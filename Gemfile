@@ -26,14 +26,16 @@ group :assets do
 end
 
 group :test do
-  gem "shoulda-matchers"
-end
-
-group :development, :test do
-  gem 'rspec-rails', '~> 2.12.2'
   gem 'factory_girl_rails'
-  gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
+  gem 'rspec-rails', '~> 2.12.2'
+  gem 'zeus'  
+  gem "shoulda-matchers"
+  
+  
+  gem 'cucumber-rails', :require => false
+  
+  
 end
 
 gem 'jquery-rails'
