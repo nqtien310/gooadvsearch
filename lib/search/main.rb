@@ -18,7 +18,8 @@ module Search
 		def search						
 			search_result_page = submit_search_form_with(@search_string)
 			nokogiri_elements = to_array_of_nokogiri_elements(search_result_page)			
-			search_results = to_array_of_hashes(nokogiri_elements)			
+			search_results_hashes = to_array_of_hashes(nokogiri_elements)			
+			search_results = SearchResultRow.to_objects(search_results_hashes)
 		end
 
 		def submit_search_form_with(search_string)

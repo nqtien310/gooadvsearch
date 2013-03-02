@@ -36,13 +36,13 @@ describe 'Search::Main' do
 					search_results.size.should == search_order.total_results
 				end
 
-				it 'should contain hash elements' do
-					search_results[0].should be_instance_of(Hash)
+				it 'should contain SearchResultRow elements' do
+					search_results[0].should be_instance_of(SearchResultRow)
 				end
 
 				it 'should contain valid search results' do
 					search_results.select do |r| 
-						( r[:description] + r[:title] ).downcase.include?(search_string)
+						( r.description + r.title ).downcase.include?(search_string)
 					end.size.should == search_order.total_results
 				end
 			end
@@ -70,13 +70,13 @@ describe 'Search::Main' do
 
 					it 'should return search results which contain exact_search_string' do
 						search_results.each do |r|
-							a = [ r[:description], r[:title], r[:href] ].join(' ').should be_include(exact_search_string)
+							a = [ r.description, r.title, r.href ].join(' ').should be_include(exact_search_string)
 						end
 					end
 
 					it 'should not return search results which contain excluded_search_string' do
 						search_results.each do |r|
-							a = [ r[:description], r[:title], r[:href] ].join(' ').should_not be_include(excluded_search_string)
+							a = [ r.description, r.title, r.href ].join(' ').should_not be_include(excluded_search_string)
 						end
 					end
 				end
@@ -105,7 +105,7 @@ describe 'Search::Main' do
 					it 'should return href contain at least 1 search token' do
 						search_results = subject.search
 						search_results.each do |r|
-							search_tokens.should be_any{ |search_token| r[:href].downcase.include?(search_token) }
+							search_tokens.should be_any{ |search_token| r.href.downcase.include?(search_token) }
 						end
 					end
 				end
@@ -133,7 +133,7 @@ describe 'Search::Main' do
 					it 'should return href contain at least 1 search token' do
 						search_results = subject.search
 						search_results.each do |r|
-							search_tokens.should be_any{ |search_token| r[:title].downcase.include?(search_token) }
+							search_tokens.should be_any{ |search_token| r.title.downcase.include?(search_token) }
 						end
 					end
 				end

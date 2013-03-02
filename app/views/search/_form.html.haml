@@ -10,7 +10,7 @@
 
 	.search_query
 		%h5 Search query
-		= f.fields_for :search_queries do | sqf |
+		= f.fields_for :search_queries, :include_id => false do | sqf |
 			= sqf.label :content
 			= sqf.text_field :content
 			%br
@@ -31,5 +31,3 @@
 	= link_to "Add new return websites", "#", :id => 'add-new-website-btn'
 
 	= f.submit
-
-= render @search_results if @search_results.present?

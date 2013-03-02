@@ -44,6 +44,8 @@ class SearchOrder < ActiveRecord::Base
 
 
 	state_machine :status , :initial => STATUSES[:PENDING] do
+		after_transition any => STATUSES[:FINISHED], :do => :reset
+
 		event :finish do
 			transition STATUSES[:PENDING] => STATUSES[:FINISHED] 
 		end
@@ -67,6 +69,10 @@ class SearchOrder < ActiveRecord::Base
 	end
 
 	private
+
+	def reset
+		self.id = nil
+	end
 
 	def has_at_least_1_search_query
 		self.errors[:base] << 'At least 1 search query must be presented' if self.search_queries.blank?

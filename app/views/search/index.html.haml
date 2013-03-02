@@ -1,3 +1,6 @@
 Search index page
 
 = render :partial => 'form'
+
+- if @search_result_rows.present?
+	= render :partial => 'search_result_row', :collection => @search_result_rows
