@@ -7,7 +7,6 @@ class SearchController < ApplicationController
 
 	def create
 		@search_order = SearchOrder.new(params['search_order'])
-
 		if(@search_order.save)
 			search_engine = Search::Main.new(@search_order)
 			@search_results = search_engine.search

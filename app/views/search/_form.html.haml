@@ -31,3 +31,5 @@
 	= link_to "Add new return websites", "#", :id => 'add-new-website-btn'
 
 	= f.submit
+
+= render @search_results if @search_results.present?

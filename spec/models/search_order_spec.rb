@@ -52,6 +52,25 @@ describe SearchOrder do
         	its(:status) { should == SearchOrder::STATUSES[:PENDING] }
   		end
   	end
+
+    describe 'websites' do
+      let(:website1) { FactoryGirl.build(:website) }
+      let(:website2) { FactoryGirl.build(:website) }
+      let(:website3) { FactoryGirl.build(:website, :domain_name => '') }
+      let(:search_query) { FactoryGirl.build(:exact_search_query) }
+
+      before(:each) do
+        subject.websites = [website1, website2, website3]
+        subject.search_queries << search_query
+      end
+
+      it 'should ignore blank values' do
+        subject.save
+        subject.websites.size.should == 2
+        subject.websites.should include website1
+        subject.websites.should include website2
+      end
+    end
   end
 
   describe 'state_machine' do

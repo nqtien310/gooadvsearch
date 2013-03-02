@@ -1,5 +1,10 @@
 class SearchOrder < ActiveRecord::Base
-	has_many :websites, :dependent => :destroy
+	has_many :websites, :dependent => :destroy do
+		def <<(website)
+			super if website.valid?
+		end
+	end
+	
 	has_many :search_queries, :dependent => :destroy
 
 	attr_accessible :search_type, :status, :total_results, :search_queries_attributes, :websites_attributes
@@ -31,6 +36,9 @@ class SearchOrder < ActiveRecord::Base
 		if self.new_record?
 			self.search_type ||= SEARCH_TYPES[:LINK]
 			self.total_results ||= DEFAULT_TOTAL_RESULTS
+			self.websites.select! do |website|
+				website.valid?
+			end
 		end
 	end
 
@@ -51,6 +59,12 @@ class SearchOrder < ActiveRecord::Base
 			self.websites.build(:domain_name => domain_name)
 		end
 	end	
+
+	def websites= (websites)
+		websites.each do |website|
+			self.websites << website
+		end		
+	end
 
 	private
 
