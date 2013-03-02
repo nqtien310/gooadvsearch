@@ -2,8 +2,8 @@ class SearchOrder < ActiveRecord::Base
 	has_many :websites, :dependent => :destroy
 	has_many :search_queries, :dependent => :destroy
 
-	attr_accessible :search_type, :status, :total_results, :search_queries_attributes
-	accepts_nested_attributes_for :search_queries
+	attr_accessible :search_type, :status, :total_results, :search_queries_attributes, :websites_attributes
+	accepts_nested_attributes_for :search_queries, :websites
 
 	STATUSES = {
 		:PENDING  => 'pending',
@@ -44,6 +44,13 @@ class SearchOrder < ActiveRecord::Base
 			transition STATUSES[:PENDING] => STATUSES[:ERROR] 
 		end
 	end
+
+
+	def build_default_return_websites
+		Website::DEFAULT_RETURN_WEBSITES.each do |domain_name|
+			self.websites.build(:domain_name => domain_name)
+		end
+	end	
 
 	private
 

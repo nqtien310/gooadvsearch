@@ -75,4 +75,20 @@ describe SearchOrder do
       end
     end
   end
+
+  describe 'build_default_return_websites' do
+    before(:each) do
+      Website::DEFAULT_RETURN_WEBSITES = [
+        'http://www.yahoo.com',
+        'http://www.google.com'
+      ]
+    end
+
+    it 'should build websites specified in Website::DEFAULT_RETURN_WEBSITES' do
+      subject.build_default_return_websites
+      subject.websites.size.should == 2
+      subject.websites.map(&:domain_name).should include 'http://www.yahoo.com'
+      subject.websites.map(&:domain_name).should include 'http://www.google.com'
+    end
+  end
 end

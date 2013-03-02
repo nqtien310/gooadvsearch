@@ -2,6 +2,7 @@ class SearchController < ApplicationController
 	def index
 		@search_order = SearchOrder.new
 		@search_order.search_queries.build
+		@search_order.websites.build
 	end
 
 	def create
@@ -12,7 +13,7 @@ class SearchController < ApplicationController
 			@search_results = search_engine.search
 			@search_order.finish!
 		end
-
+		
 		render :index
 	end
 end

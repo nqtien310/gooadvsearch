@@ -21,7 +21,13 @@
 
 	= link_to 'Add new search query' , "#", :id => 'add-new-query-btn'
 
+	.return_websites
+		%h5 Choose websites in which you want to search
+		.website
+			= f.fields_for :websites do | wf |			
+				= wf.text_field :domain_name				
+				%br
+
+	= link_to "Add new return websites", "#", :id => 'add-new-website-btn'
+
 	= f.submit
-
-:javascript
-
